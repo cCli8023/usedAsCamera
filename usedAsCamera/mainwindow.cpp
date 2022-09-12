@@ -5,6 +5,7 @@
 #include <QMenu>
 #include <QDebug>
 #include <QTimer>
+#include <QUdpSocket>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     initTimeMod();
+    initDiscoverMod();
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +44,18 @@ void MainWindow::initTimeMod()
     t->start();
 }
 
+void MainWindow::initDiscoverMod()
+{
+    _discoverMod = new discoverMod;
+
+    connect(&_discoverMod->socket(), &QUdpSocket::readyRead, this, [this](){
+        QQueue<QByteArray> msgQue = _discoverMod->message();
+        for (auto & msg : msgQue) {
+            ui->textDiscover->append(msg.toStdString().c_str());
+        }
+    });
+}
+
 
 void MainWindow::on_boxTz_currentTextChanged(const QString &arg1)
 {
@@ -49,5 +63,11 @@ void MainWindow::on_boxTz_currentTextChanged(const QString &arg1)
     QDateTime dt = _timeMod->timeById(tz);
     ui->labLocalValue->setText(dt.toString("yyyy-MM-dd hh:mm:ss"));
     ui->labUtcValue->setText(dt.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->textDiscover->clear();
 }
 

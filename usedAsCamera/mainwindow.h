@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "timeMod.h"
-
+#include "discoverMod.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,11 +20,15 @@ public:
 private slots:
     void on_boxTz_currentTextChanged(const QString &arg1);
 
+    void on_pushButton_clicked();
+
 private:
     void initTimeMod();
+    void initDiscoverMod();
 private:
     Ui::MainWindow *ui;
 
     timeMod * _timeMod;
+    discoverMod * _discoverMod;
 };
 #endif // MAINWINDOW_H
